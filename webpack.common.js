@@ -1,5 +1,8 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const devMode = process.env.NODE_ENV !== "production";
 const path = require("path");
+
 
 module.exports = {
     entry: "./src/index.tsx",
@@ -12,6 +15,21 @@ module.exports = {
                     loader: 'babel-loader',
                 },
             },
+            {
+                test: /\.(sa|sc|c)ss$/,
+                use: [
+                    devMode ? "style-loader" : MiniCssExtractPlugin.loader,
+                    'css-loader'
+                ],
+            },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                type: 'asset/resource',
+            },
         ],
     },
     plugins: [
@@ -19,24 +37,9 @@ module.exports = {
             template: './public/index.html',
             filename: './index.html',
         }),
-    ],
+    ].concat(devMode ? [] : [new MiniCssExtractPlugin()]),
     resolve: {
         modules: [__dirname, "src", "node_modules"],
         extensions: ["*", ".js", ".jsx", ".tsx", ".ts"]
     },
-    // module: {
-    //     // rules: [
-    //     //     {
-    //     //         test: /\.jsx?$/,
-    //     //         exclude: /node_mmodules/,
-    //     //         use: ["style-loader", "css-loader"]
-    //     //     },
-    //     // {
-    //     //  test: /\.(png|svg|jpg|gif)$/,
-    //     //  exclude: /node_modules/,
-    //     //  use: ["file-loader"]   
-    //     // }
-
-    //     // ]
-    // }
 };
